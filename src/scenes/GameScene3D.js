@@ -101,6 +101,13 @@ export class GameScene3D {
         // Update camera to follow player
         this.game.followTarget(this.player.tileX, this.player.tileZ);
 
+        // Hide roof of building player is inside
+        this.map.updateRoofVisibility(this.player.tileX, this.player.tileZ);
+
+        // Pulse entrance glow indicators
+        this.map.updateGlows(performance.now());
+        this.map.updateAnimations(performance.now());
+
         // Bush fade: not needed without bush detection in 3D, player always visible
         // (bushes are 3D objects that you see through due to camera angle)
 

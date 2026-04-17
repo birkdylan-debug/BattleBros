@@ -245,21 +245,29 @@ function placeBuilding(tileData, x, y, w, h, wallTile, floorTile, doorSide) {
     for (let r = y + 1; r < y + h - 1; r++)
         for (let c = x + 1; c < x + w - 1; c++)
             tileData[r][c] = floorTile;
-    // Door (2 tiles wide)
+    // Door (3 tiles wide)
     const midX = x + Math.floor(w / 2);
     const midY = y + Math.floor(h / 2);
     if (doorSide === 'south' && y + h - 1 < ROWS) {
-        tileData[y + h - 1][midX] = TILE.DOOR;
-        if (midX + 1 < x + w) tileData[y + h - 1][midX + 1] = TILE.DOOR;
+        for (let dc = -1; dc <= 1; dc++) {
+            const cc = midX + dc;
+            if (cc > x && cc < x + w - 1) tileData[y + h - 1][cc] = TILE.DOOR;
+        }
     } else if (doorSide === 'north' && y >= 0) {
-        tileData[y][midX] = TILE.DOOR;
-        if (midX + 1 < x + w) tileData[y][midX + 1] = TILE.DOOR;
+        for (let dc = -1; dc <= 1; dc++) {
+            const cc = midX + dc;
+            if (cc > x && cc < x + w - 1) tileData[y][cc] = TILE.DOOR;
+        }
     } else if (doorSide === 'east' && x + w - 1 < COLS) {
-        tileData[midY][x + w - 1] = TILE.DOOR;
-        if (midY + 1 < y + h) tileData[midY + 1][x + w - 1] = TILE.DOOR;
+        for (let dr = -1; dr <= 1; dr++) {
+            const rr = midY + dr;
+            if (rr > y && rr < y + h - 1) tileData[rr][x + w - 1] = TILE.DOOR;
+        }
     } else if (doorSide === 'west' && x >= 0) {
-        tileData[midY][x] = TILE.DOOR;
-        if (midY + 1 < y + h) tileData[midY + 1][x] = TILE.DOOR;
+        for (let dr = -1; dr <= 1; dr++) {
+            const rr = midY + dr;
+            if (rr > y && rr < y + h - 1) tileData[rr][x] = TILE.DOOR;
+        }
     }
 }
 

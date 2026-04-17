@@ -8,14 +8,14 @@ export class Game {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.shadowMap.type = THREE.PCFShadowMap;
         document.body.style.cssText = 'margin:0;overflow:hidden;background:#000';
         document.body.appendChild(this.renderer.domElement);
 
         // Scene
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x1a2810);
-        this.scene.fog = new THREE.FogExp2(0x1a2810, 0.012);
+        this.scene.background = new THREE.Color(0x87ceeb);
+        this.scene.fog = new THREE.FogExp2(0x87ceeb, 0.004);
 
         // Camera — OrthographicCamera at Battlelands angle
         this._setupCamera();

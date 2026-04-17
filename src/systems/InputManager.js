@@ -8,6 +8,11 @@ export class InputManager {
         this._leftHeld = false;
         this._mouseScreen = { x: 0, y: 0 };
 
+        // Cached raycaster + ground plane — correct for OrthographicCamera
+        this._raycaster   = new THREE.Raycaster();
+        this._groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+        this._hitTarget   = new THREE.Vector3();
+
         this._onKeyDown  = e => { this.keys[e.code] = true;  };
         this._onKeyUp    = e => { this.keys[e.code] = false; };
         this._onMouseDown = e => {
@@ -42,20 +47,17 @@ export class InputManager {
     }
 
     // Raycast mouse onto the ground plane (y=0)
+    // Uses THREE.Raycaster which correctly handles OrthographicCamera
     updateMouseWorld(camera, renderer) {
         const rect = renderer.domElement.getBoundingClientRect();
         const nx = ((this._mouseScreen.x - rect.left) / rect.width)  * 2 - 1;
-        const ny = -((this._mouseScreen.y - rect.top) / rect.height) * 2 + 1;
+        const ny = -((this._mouseScreen.y - rect.top)  / rect.height) * 2 + 1;
 
-        const ndcPos = new THREE.Vector3(nx, ny, -1).unproject(camera);
-        const dir = ndcPos.sub(camera.position).normalize();
-
-        if (Math.abs(dir.y) > 0.0001) {
-            const t = -camera.position.y / dir.y;
-            if (t > 0) {
-                this.mouseWorld.x = camera.position.x + dir.x * t;
-                this.mouseWorld.z = camera.position.z + dir.z * t;
-            }
+        this._raycaster.setFromCamera(new THREE.Vector2(nx, ny), camera);
+        const hit = this._raycaster.ray.intersectPlane(this._groundPlane, this._hitTarget);
+        if (hit) {
+            this.mouseWorld.x = this._hitTarget.x;
+            this.mouseWorld.z = this._hitTarget.z;
         }
     }
 
